@@ -28,6 +28,12 @@ Viele Batteriewechselrichter haben bei niedriger Last hohe Grundverluste. Das Ko
 2. WR 2 wird erst bei hoeherer Hauslast zugeschaltet.
 3. Der 12-V-DC-Ausgang vermeidet unnoetige DC-AC-DC-Wandlung fuer Router und Kleingeraete.
 
+<br>
+<a href="https://www.buymeacoffee.com/thoralf.brandt" target="_blank">
+  <img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174">
+</a>
+<br>
+
 ## Repo-Inhalt
 
 ```text
@@ -39,21 +45,6 @@ src/                          Reiner Python-Regelalgorithmus
 tests/                        Unit-Tests fuer den Regler
 scripts/                      Hilfsskripte
 ```
-
-## Schnellstart fuer GitHub
-
-```bash
-unzip bkw-effizienz-steigern-github.zip
-cd bkw-effizienz-steigern
-git init
-git remote add origin https://github.com/TBR-BRD/bkw-effizienz-steigern.git
-git add .
-git commit -m "Initial commit: BKW Effizienzsteigerung"
-git branch -M main
-git push -u origin main
-```
-
-Alternativ kannst du den Inhalt dieses Ordners direkt in das leere GitHub-Repository hochladen.
 
 ## Home Assistant Schnellstart
 
