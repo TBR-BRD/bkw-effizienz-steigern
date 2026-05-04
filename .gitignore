@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.venv/
+venv/
+dist/
+build/
+*.egg-info/
+
+# Home Assistant secrets
+secrets.yaml
+*.secret.yaml
+.storage/
+known_devices.yaml
+home-assistant_v2.db*
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Local logs
+*.log
+logs/
+
+# Generated archives
+*.zip
+*.tar.gz

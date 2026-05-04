@@ -1,0 +1,15 @@
+flowchart LR
+  PV[PV bis 2000 Wp] --> PROT[DC-Schutz: Trennstelle, Sicherung, SPD]
+  PROT --> MPPT[MPPT-Laderegler]
+  MPPT --> BAT[48 V / 51,2 V LiFePO4 Akku + BMS]
+  BAT --> BUS[DC-Bus]
+  BUS --> WR1[WR1 Grundlast 100 VA]
+  BUS --> WR2[WR2 Zusatzleistung 600 VA]
+  BUS --> DCDC[DC/DC 48V->12V]
+  DCDC --> DCLOAD[Router, ONT, HA, Sensorik]
+  WR1 --> AC[AC-Hausnetz, max 700 VA installiert]
+  WR2 --> AC
+  METER[Hausanschluss-Messgeraet] --> HA[Home Assistant Regler]
+  HA --> WR1
+  HA --> WR2
+  HA --> MPPT

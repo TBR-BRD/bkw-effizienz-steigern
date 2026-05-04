@@ -1,0 +1,103 @@
+blueprint:
+  name: BKW Effizienzsteigerung - MPPT Akku-Schutz
+  description: >
+    Einfache Schutzautomation fuer MPPT-Laderegler. Setzt Ladestrom auf 0,
+    wenn Akku voll ist oder Temperaturgrenzen verletzt sind.
+  domain: automation
+  input:
+    battery_soc_sensor:
+      name: Akku SOC
+      selector:
+        entity:
+          domain: sensor
+    battery_temp_sensor:
+      name: Akku Temperatur
+      selector:
+        entity:
+          domain: sensor
+    mppt_current_number:
+      name: MPPT Ladestromlimit
+      selector:
+        entity:
+          domain: number
+    mppt_switch:
+      name: MPPT Ein/Aus
+      selector:
+        entity:
+          domain: switch
+    max_charge_current_a:
+      name: Maximaler Ladestrom
+      default: 40
+      selector:
+        number:
+          min: 0
+          max: 100
+          step: 1
+          unit_of_measurement: A
+    full_soc_pct:
+      name: Akku voll ab SOC
+      default: 98
+      selector:
+        number:
+          min: 50
+          max: 100
+          step: 1
+          unit_of_measurement: "%"
+    min_temp_c:
+      name: Minimale Ladetemperatur
+      default: 2
+      selector:
+        number:
+          min: -20
+          max: 20
+          step: 1
+          unit_of_measurement: "C"
+    max_temp_c:
+      name: Maximale Ladetemperatur
+      default: 45
+      selector:
+        number:
+          min: 20
+          max: 70
+          step: 1
+          unit_of_measurement: "C"
+
+mode: restart
+trigger:
+  - platform: time_pattern
+    minutes: "/1"
+
+variables:
+  soc_entity: !input battery_soc_sensor
+  temp_entity: !input battery_temp_sensor
+  max_charge_current_a_var: !input max_charge_current_a
+  full_soc_pct_var: !input full_soc_pct
+  min_temp_c_var: !input min_temp_c
+  max_temp_c_var: !input max_temp_c
+  soc: "{{ states(soc_entity) | float(0) }}"
+  temp: "{{ states(temp_entity) | float(0) }}"
+  stop_charge: "{{ soc >= full_soc_pct_var or temp < min_temp_c_var or temp > max_temp_c_var }}"
+
+action:
+  - choose:
+      - conditions:
+          - condition: template
+            value_template: "{{ stop_charge }}"
+        sequence:
+          - service: number.set_value
+            target:
+              entity_id: !input mppt_current_number
+            data:
+              value: 0
+          - service: switch.turn_off
+            target:
+              entity_id: !input mppt_switch
+    default:
+      - service: switch.turn_on
+        target:
+          entity_id: !input mppt_switch
+      - service: number.set_value
+        target:
+          entity_id: !input mppt_current_number
+        data:
+          value: "{{ max_charge_current_a_var }}"

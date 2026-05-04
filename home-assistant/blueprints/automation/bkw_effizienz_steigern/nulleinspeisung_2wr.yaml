@@ -1,0 +1,255 @@
+blueprint:
+  name: BKW Effizienzsteigerung - Nulleinspeisung mit 2 Wechselrichtern
+  description: >
+    Regelt WR1 100 W und WR2 600 W anhand der Hausanschlussleistung.
+    Vorzeichen: positiver Wert = Netzbezug, negativer Wert = Einspeisung.
+  domain: automation
+  input:
+    grid_power_sensor:
+      name: Hausanschlussleistung
+      description: Sensor in W. Positiv = Bezug, negativ = Einspeisung.
+      selector:
+        entity:
+          domain: sensor
+    battery_soc_sensor:
+      name: Akku SOC
+      selector:
+        entity:
+          domain: sensor
+    wr1_power_number:
+      name: WR1 Leistungsgrenze
+      selector:
+        entity:
+          domain: number
+    wr2_power_number:
+      name: WR2 Leistungsgrenze
+      selector:
+        entity:
+          domain: number
+    wr1_switch:
+      name: WR1 Ein/Aus
+      selector:
+        entity:
+          domain: switch
+    wr2_switch:
+      name: WR2 Ein/Aus
+      selector:
+        entity:
+          domain: switch
+    target_grid_w:
+      name: Ziel-Netzbezug
+      default: 15
+      selector:
+        number:
+          min: 0
+          max: 100
+          step: 1
+          unit_of_measurement: W
+    deadband_w:
+      name: Deadband
+      default: 8
+      selector:
+        number:
+          min: 0
+          max: 50
+          step: 1
+          unit_of_measurement: W
+    wr1_min_w:
+      name: WR1 Mindestleistung
+      default: 50
+      selector:
+        number:
+          min: 0
+          max: 100
+          step: 1
+          unit_of_measurement: W
+    wr1_max_w:
+      name: WR1 Maximalleistung
+      default: 100
+      selector:
+        number:
+          min: 50
+          max: 150
+          step: 1
+          unit_of_measurement: W
+    wr2_min_w:
+      name: WR2 Mindestleistung
+      default: 50
+      selector:
+        number:
+          min: 0
+          max: 200
+          step: 1
+          unit_of_measurement: W
+    wr2_max_w:
+      name: WR2 Maximalleistung
+      default: 600
+      selector:
+        number:
+          min: 100
+          max: 700
+          step: 1
+          unit_of_measurement: W
+    installed_limit_w:
+      name: Installierte WR-Summe
+      default: 700
+      selector:
+        number:
+          min: 0
+          max: 800
+          step: 1
+          unit_of_measurement: W
+    legal_limit_w:
+      name: Harte Rechtsgrenze
+      default: 800
+      selector:
+        number:
+          min: 0
+          max: 800
+          step: 1
+          unit_of_measurement: W
+    soc_stop_pct:
+      name: Akku SOC Stop
+      default: 20
+      selector:
+        number:
+          min: 0
+          max: 100
+          step: 1
+          unit_of_measurement: "%"
+
+mode: restart
+max_exceeded: silent
+
+trigger:
+  - platform: time_pattern
+    seconds: "/5"
+
+variables:
+  grid_power_entity: !input grid_power_sensor
+  battery_soc_entity: !input battery_soc_sensor
+  wr1_power_entity: !input wr1_power_number
+  wr2_power_entity: !input wr2_power_number
+  target_grid_w_var: !input target_grid_w
+  deadband_w_var: !input deadband_w
+  wr1_min_w_var: !input wr1_min_w
+  wr1_max_w_var: !input wr1_max_w
+  wr2_min_w_var: !input wr2_min_w
+  wr2_max_w_var: !input wr2_max_w
+  installed_limit_w_var: !input installed_limit_w
+  legal_limit_w_var: !input legal_limit_w
+  soc_stop_pct_var: !input soc_stop_pct
+  meter_ok: "{{ states(grid_power_entity) not in ['unknown', 'unavailable', 'none', 'None'] }}"
+  grid_power_w: "{{ states(grid_power_entity) | float(0) }}"
+  soc_pct: "{{ states(battery_soc_entity) | float(0) }}"
+  wr1_current_w: "{{ states(wr1_power_entity) | float(0) }}"
+  wr2_current_w: "{{ states(wr2_power_entity) | float(0) }}"
+  current_total_w: "{{ [0, wr1_current_w + wr2_current_w] | max }}"
+  error_w: "{{ grid_power_w - target_grid_w_var }}"
+  desired_raw_w: >-
+    {% if (error_w | abs) <= deadband_w_var %}
+      {{ current_total_w }}
+    {% else %}
+      {{ current_total_w + error_w }}
+    {% endif %}
+  cap_w: "{{ [installed_limit_w_var, legal_limit_w_var, wr1_max_w_var + wr2_max_w_var] | min }}"
+  desired_w: >-
+    {% set p = desired_raw_w | float(0) %}
+    {% if p < 0 %}
+      0
+    {% elif p > cap_w %}
+      {{ cap_w }}
+    {% else %}
+      {{ p }}
+    {% endif %}
+  wr1_sp_w: >-
+    {% set p = desired_w | float(0) %}
+    {% if p < wr1_min_w_var %}
+      0
+    {% elif p <= wr1_max_w_var %}
+      {{ p }}
+    {% else %}
+      {{ wr1_max_w_var }}
+    {% endif %}
+  wr2_sp_w: >-
+    {% set p = desired_w | float(0) %}
+    {% if p <= wr1_max_w_var %}
+      0
+    {% else %}
+      {% set x = p - wr1_max_w_var %}
+      {% if x < wr2_min_w_var %}
+        0
+      {% elif x > wr2_max_w_var %}
+        {{ wr2_max_w_var }}
+      {% else %}
+        {{ x }}
+      {% endif %}
+    {% endif %}
+  safety_off: "{{ (not meter_ok) or (soc_pct <= soc_stop_pct_var) }}"
+
+action:
+  - choose:
+      - conditions:
+          - condition: template
+            value_template: "{{ safety_off }}"
+        sequence:
+          - service: number.set_value
+            target:
+              entity_id: !input wr1_power_number
+            data:
+              value: 0
+          - service: number.set_value
+            target:
+              entity_id: !input wr2_power_number
+            data:
+              value: 0
+          - service: switch.turn_off
+            target:
+              entity_id:
+                - !input wr1_switch
+                - !input wr2_switch
+    default:
+      - choose:
+          - conditions:
+              - condition: template
+                value_template: "{{ (wr1_sp_w | float(0)) > 0 }}"
+            sequence:
+              - service: switch.turn_on
+                target:
+                  entity_id: !input wr1_switch
+              - service: number.set_value
+                target:
+                  entity_id: !input wr1_power_number
+                data:
+                  value: "{{ wr1_sp_w | float(0) | round(0) }}"
+        default:
+          - service: number.set_value
+            target:
+              entity_id: !input wr1_power_number
+            data:
+              value: 0
+          - service: switch.turn_off
+            target:
+              entity_id: !input wr1_switch
+      - choose:
+          - conditions:
+              - condition: template
+                value_template: "{{ (wr2_sp_w | float(0)) > 0 }}"
+            sequence:
+              - service: switch.turn_on
+                target:
+                  entity_id: !input wr2_switch
+              - service: number.set_value
+                target:
+                  entity_id: !input wr2_power_number
+                data:
+                  value: "{{ wr2_sp_w | float(0) | round(0) }}"
+        default:
+          - service: number.set_value
+            target:
+              entity_id: !input wr2_power_number
+            data:
+              value: 0
+          - service: switch.turn_off
+            target:
+              entity_id: !input wr2_switch

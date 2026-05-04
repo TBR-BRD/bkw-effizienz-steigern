@@ -1,0 +1,9 @@
+{
+  "title": "BKW efficiency controller",
+  "services": {
+    "calculate_setpoints": {
+      "name": "Calculate setpoints",
+      "description": "Calculate setpoints for WR1 and WR2."
+    }
+  }
+}

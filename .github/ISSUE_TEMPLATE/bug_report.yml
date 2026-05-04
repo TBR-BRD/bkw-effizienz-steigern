@@ -1,0 +1,25 @@
+name: Bug report
+about: Fehler im Konzept, Code oder Blueprint melden
+title: "[Bug]: "
+labels: [bug]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Beschreibung
+      description: Was ist passiert?
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Erwartetes Verhalten
+    validations:
+      required: false
+  - type: textarea
+    id: environment
+    attributes:
+      label: Umgebung
+      description: Home Assistant Version, Wechselrichter, Messgeraet, Akku
+    validations:
+      required: false

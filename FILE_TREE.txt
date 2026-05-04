@@ -1,0 +1,53 @@
+- .editorconfig
+    - bug_report.yml
+    - feature_request.yml
+    - validate.yml
+- .gitignore
+- CHANGELOG.md
+- CITATION.cff
+- CONTRIBUTING.md
+- DISCLAIMER.md
+- FILE_MANIFEST.tsv
+- LICENSE
+- NOTICE.md
+- README.md
+- SECURITY.md
+    - __init__.py
+    - algorithm.py
+    - const.py
+    - manifest.json
+    - services.yaml
+    - strings.json
+      - de.json
+      - en.json
+    - blockdiagram.mmd
+    - konzept.png
+    - schaltplan.png
+    - schaltplan.svg
+  - hardware.md
+  - home-assistant.md
+  - installation.md
+  - konzept.md
+  - messung-effizienz.md
+  - recht-und-sicherheit.md
+  - regelung.md
+- hacs.json
+  - BKW_Hardwareliste_Einkauf_2WR_2000Wp.xlsx
+  - bom.csv
+  - bom.md
+  - price_notes.md
+  - wiring_notes.md
+        - mppt_akku_schutz.yaml
+        - nulleinspeisung_2wr.yaml
+    - bkw_effizienz_dashboard.yaml
+    - example_entities.yaml
+    - bkw_effizienz_steigern_template.yaml
+- pyproject.toml
+- requirements-dev.txt
+  - calculate_example.py
+  - init_and_push.sh
+    - __init__.py
+    - cli.py
+    - controller.py
+  - test_controller.py
+  - import_to_ha.md

@@ -1,0 +1,31 @@
+# Beispiel-Package fuer Home Assistant.
+# Entitaeten an die eigene Anlage anpassen oder besser den Blueprint nutzen.
+
+input_number:
+  bkw_grid_target_w:
+    name: BKW Ziel-Netzbezug
+    min: 0
+    max: 100
+    step: 1
+    unit_of_measurement: W
+    initial: 15
+  bkw_installed_limit_w:
+    name: BKW installierte WR-Summe
+    min: 0
+    max: 800
+    step: 1
+    unit_of_measurement: W
+    initial: 700
+
+input_boolean:
+  bkw_controller_enabled:
+    name: BKW Regler aktiv
+    initial: false
+
+template:
+  - sensor:
+      - name: BKW Konzept WR Summe Soll
+        unique_id: bkw_konzept_wr_summe_soll
+        unit_of_measurement: W
+        state: >-
+          {{ states('number.wr1_power_limit')|float(0) + states('number.wr2_power_limit')|float(0) }}

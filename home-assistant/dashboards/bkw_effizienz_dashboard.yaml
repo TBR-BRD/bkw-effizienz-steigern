@@ -1,0 +1,27 @@
+title: BKW Effizienz
+views:
+  - title: BKW
+    path: bkw
+    cards:
+      - type: entities
+        title: Status
+        entities:
+          - sensor.shelly_pro_3em_total_active_power
+          - sensor.battery_soc
+          - sensor.pv_power
+          - number.wr1_power_limit
+          - number.wr2_power_limit
+          - switch.wr1_enable
+          - switch.wr2_enable
+      - type: history-graph
+        title: Leistung
+        hours_to_show: 6
+        entities:
+          - sensor.shelly_pro_3em_total_active_power
+          - number.wr1_power_limit
+          - number.wr2_power_limit
+      - type: gauge
+        name: Akku SOC
+        entity: sensor.battery_soc
+        min: 0
+        max: 100

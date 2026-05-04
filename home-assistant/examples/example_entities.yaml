@@ -1,0 +1,30 @@
+# Beispiel-Entitaeten. Namen an deine Integrationen anpassen.
+
+meter:
+  grid_power: sensor.shelly_pro_3em_total_active_power
+
+battery:
+  soc: sensor.battery_soc
+  voltage: sensor.battery_voltage
+  current: sensor.battery_current
+  temperature: sensor.battery_temperature
+
+inverters:
+  wr1:
+    enable: switch.wr1_enable
+    power_limit: number.wr1_power_limit
+    actual_power: sensor.wr1_ac_power
+  wr2:
+    enable: switch.wr2_enable
+    power_limit: number.wr2_power_limit
+    actual_power: sensor.wr2_ac_power
+
+mppt:
+  enable: switch.mppt_enable
+  current_limit: number.mppt_charge_current_limit
+  pv_power: sensor.pv_power
+
+dc_12v:
+  enable: switch.dc_12v_enable
+  voltage: sensor.dc_12v_voltage
+  current: sensor.dc_12v_current

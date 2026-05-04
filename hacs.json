@@ -1,0 +1,6 @@
+{
+  "name": "BKW Effizienz steigern",
+  "render_readme": true,
+  "domains": ["bkw_effizienz_steigern"],
+  "homeassistant": "2024.6.0"
+}

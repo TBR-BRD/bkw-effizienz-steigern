@@ -1,0 +1,9 @@
+{
+  "title": "BKW Effizienz steigern",
+  "services": {
+    "calculate_setpoints": {
+      "name": "Setpoints berechnen",
+      "description": "Berechnet Sollwerte fuer WR1 und WR2."
+    }
+  }
+}

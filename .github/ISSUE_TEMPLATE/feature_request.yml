@@ -1,0 +1,17 @@
+name: Feature request
+about: Verbesserung oder neue Hardware vorschlagen
+title: "[Feature]: "
+labels: [enhancement]
+body:
+  - type: textarea
+    id: idea
+    attributes:
+      label: Vorschlag
+    validations:
+      required: true
+  - type: textarea
+    id: details
+    attributes:
+      label: Details / Quellen
+    validations:
+      required: false

@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+title: "BKW Effizienz steigern"
+message: "Wenn du dieses Konzept verwendest, verweise bitte auf dieses GitHub-Repository."
+type: software
+authors:
+  - name: TBR-BRD
+version: 0.1.0
+date-released: 2026-05-04
+url: "https://github.com/TBR-BRD/bkw-effizienz-steigern"
+license: MIT
