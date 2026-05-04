@@ -34,6 +34,13 @@ Viele Batteriewechselrichter haben bei niedriger Last hohe Grundverluste. Das Ko
 </a>
 <br>
 
+# BKW Efficiency Booster
+
+An open-source concept for improving the efficiency of German balcony PV storage systems.  
+The system uses a small 100 VA inverter for continuous base loads and switches an additional 600 VA inverter only when needed. A DC battery, MPPT charger, grid power meter and Home Assistant controller work together to reduce low-load inverter losses and support zero-export operation within the German 800 VA balcony solar limit.
+
+This project is intended for concept development, documentation and experimentation. Electrical installation must be checked and carried out according to local regulations by qualified professionals.
+
 ## Repo-Inhalt
 
 ```text
