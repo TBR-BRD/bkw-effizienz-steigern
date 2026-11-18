@@ -1,5 +1,7 @@
 # BKW Effizienz steigern
 
+🇩🇪 Deutsch · [🇬🇧 English](README_EN.md)
+
 Konzept und Home-Assistant-Regelung fuer ein Balkonkraftwerk mit DC-Speicher, zwei netzparallelen Wechselrichtern und Nulleinspeisungsregelung.
 
 Ziel des Projekts: geringe Grundlast effizient versorgen und Zusatzleistung nur bei Bedarf zuschalten.
